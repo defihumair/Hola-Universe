@@ -1,0 +1,184 @@
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.heartrate_seconds_merged`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.hourlyCalroie_merged`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.hourlyIntensity_merged`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.hourlySteps_merged`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.Sleepday`
+
+SELECT COUNT (DISTINCT Id) AS Total_Ids 
+FROM `scenic-kiln-368505.Bellabeat.weightLogInfo_merged`
+
+SELECT Id,
+COUNT(Id) AS Total_Id
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+WITH T1 AS 
+(SELECT Id,
+COUNT(Id) AS Total_Logged_Uses,
+CASE
+WHEN COUNT(Id) BETWEEN 25 AND 31 THEN 'Active User'
+WHEN COUNT(Id) BETWEEN 15 and 24 THEN 'Moderate User'
+WHEN COUNT(Id) BETWEEN 0 and 14 THEN 'Light User'
+END Fitbit_Usage_Type
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id),
+T2 AS
+(SELECT Id,
+MIN(TotalSteps) AS Min_Total_Steps,
+MAX(TotalSteps) AS Max_Total_Steps, 
+AVG(TotalSteps) AS Avg_Total_Stpes,
+MIN(TotalDistance) AS Min_Total_Distance, 
+MAX(TotalDistance) AS Max_Total_Distance, 
+AVG(TotalDistance) AS Avg_Total_Distance,
+MIN(Calories) AS Min_Total_Calories,
+MAX(Calories) AS Max_Total_Calories,
+AVG(Calories) AS Avg_Total_Calories,
+MIN(VeryActiveMinutes) AS Min_Very_Active_Minutes,
+MAX(VeryActiveMinutes) AS Max_Very_Active_Minutes,
+AVG(VeryActiveMinutes) AS Avg_Very_Active_Minutes,
+MIN(FairlyActiveMinutes) AS Min_Fairly_Active_Minutes,
+MAX(FairlyActiveMinutes) AS Max_Fairly_Active_Minutes,
+AVG(FairlyActiveMinutes) AS Avg_Fairly_Active_Minutes,
+MIN(LightlyActiveMinutes) AS Min_Lightly_Active_Minutes,
+MAX(LightlyActiveMinutes) AS Max_Lightly_Active_Minutes,
+AVG(LightlyActiveMinutes) AS Avg_Lightly_Active_Minutes,
+MIN(SedentaryMinutes) AS Min_Sedentary_Minutes,
+MAX(SedentaryMinutes) AS Max_Sedentary_Minutes,
+AVG(SedentaryMinutes) AS Avg_Sedentary_Minutes
+From `scenic-kiln-368505.Bellabeat.Dailyactive`
+Group BY Id),
+
+
+SELECT Id, 
+avg(VeryActiveMinutes) AS Avg_Very_Active_Minutes,
+avg(FairlyActiveMinutes) AS Avg_Fairly_Active_Minutes,
+avg(LightlyActiveMinutes) AS Avg_Lightly_Active_Minutes,
+avg(SedentaryMinutes) AS Avg_Sedentary_Minutes,
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+SELECT Activity_Day,
+ROUND (avg(VeryActiveMinutes), 2) AS Avg_Very_Active_Minutes,
+ROUND (avg(FairlyActiveMinutes), 2) AS Avg_Fairly_Active_Minutes,
+ROUND (avg(LightlyActiveMinutes), 2) AS Avg_Lightly_Active_Minutes,
+ROUND (avg(SedentaryMinutes), 2) AS Avg_Sedentary_Minutes,
+FROM  `scenic-kiln-368505.Bellabeat.daily_activity_merged_weekday`
+GROUP BY Activity_Day
+
+SELECT Id, 
+avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) AS Total_Avg_Active_Minutes
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+SELECT Id, 
+avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) + avg(LightlyActiveMinutes) AS Total_Avg_Active_Minutes,
+CASE 
+WHEN avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) + avg(LightlyActiveMinutes) >= 150 THEN 'Meets CDC Recommendation'
+WHEN avg(VeryActiveMinutes) + avg(FairlyActiveMinutes) + avg(LightlyActiveMinutes) <150 THEN 'Does Not Meet CDC Recommendation'
+END CDC_Recommendations
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+SELECT Id, 
+SUM(VeryActiveMinutes) + SUM(FairlyActiveMinutes) + SUM(LightlyActiveMinutes) AS Total_Avg_Active_Minutes,
+CASE 
+WHEN SUM(VeryActiveMinutes) + SUM(FairlyActiveMinutes) + SUM(LightlyActiveMinutes) >= 150 THEN 'Meets CDC Recommendation'
+WHEN SUM(VeryActiveMinutes) + SUM(FairlyActiveMinutes) + SUM(LightlyActiveMinutes) <150 THEN 'Does Not Meet CDC Recommendation'
+END CDC_Recommendations
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+WHERE ActivityDate BETWEEN '2016-04-17' AND '2016-04-23'
+GROUP BY Id
+
+SELECT Id, 
+SUM(VeryActiveMinutes + FairlyActiveMinutes) AS Total_Avg_Active_Minutes,
+CASE 
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes) >= 150 THEN 'Meets CDC Recommendation'
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes) <150 THEN 'Does Not Meet CDC Recommendation'
+END CDC_Recommendations
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+WHERE ActivityDate BETWEEN '2016-04-17' AND '2016-04-23'
+GROUP BY Id
+
+SELECT Id, 
+SUM(VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) AS Total_Avg_Active_Minutes,
+CASE 
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) >= 150 THEN 'Meets CDC Recommendation'
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes + LightlyActiveMinutes) <150 THEN 'Does Not Meet CDC Recommendation'
+END CDC_Recommendations
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+WHERE ActivityDate BETWEEN '2016-05-01' AND '2016-05-07'
+GROUP BY Id
+
+SELECT Id, 
+SUM(VeryActiveMinutes + FairlyActiveMinutes) AS Total_Sum_Active_Minutes,
+CASE 
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes) >= 150 THEN 'Meets CDC Recommendation'
+WHEN SUM(VeryActiveMinutes + FairlyActiveMinutes) <150 THEN 'Does Not Meet CDC Recommendation'
+END CDC_Recommendations
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+WHERE ActivityDate BETWEEN '2016-05-01' AND '2016-05-07'
+GROUP BY Id
+
+
+SELECT Id,
+avg(TotalSteps) AS Avg_Total_Steps,
+CASE
+WHEN avg(TotalSteps) < 5000 THEN 'Inactive'
+WHEN avg(TotalSteps) BETWEEN 5000 AND 7499 THEN 'Low Active User'
+WHEN avg(TotalSteps) BETWEEN 7500 AND 9999 THEN 'Average Active User'
+WHEN avg(TotalSteps) BETWEEN 10000 AND 12499 THEN 'Active User'
+WHEN avg(TotalSteps) >= 12500 THEN 'Very Active User'
+END User_Type
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+SELECT Id, 
+Sum(TotalSteps) AS Sum_total_steps,
+SUM(Calories) AS Sum_Calories, 
+SUM(VeryActiveMinutes + FairlyActiveMinutes) AS Sum_Active_Minutes
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive`
+GROUP BY Id
+
+ 
+
+ 
+SELECT Activity_Day,
+ROUND (avg(TotalSteps), 2) AS Average_Total_Steps,
+FROM `scenic-kiln-368505.Bellabeat.daily_activity_merged_weekday`
+GROUP BY Activity_Day
+ORDER BY Average_Total_Steps DESC 
+
+SELECT 
+ActivityHour,
+SUM(StepTotal) AS Total_Steps_By_Hour
+FROM `scenic-kiln-368505.Bellabeat.hourlySteps_merged`
+GROUP BY ActivityHour
+ORDER BY Total_Steps_By_Hour DESC
+
+SELECT 
+SleepDay,
+SUM(TotalMinutesAsleep) AS Total_Minutes_Asleep
+FROM `scenic-kiln-368505.Bellabeat.Sleepday`
+WHERE SleepDay IS NOT NULL
+GROUP BY SleepDay
+
+SELECT a.Id,
+avg(a.TotalSteps) AS AvgTotalSteps,
+avg(a.Calories) AS AvgCalories,
+avg(s.TotalMinutesAsleep) AS AvgTotalMinutesAsleep,
+FROM `scenic-kiln-368505.Bellabeat.Dailyactive` AS a
+INNER JOIN `scenic-kiln-368505.Bellabeat.Sleepday` AS s ON a.Id=s.Id
+GROUP BY a.Id
+
